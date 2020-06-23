@@ -21,6 +21,10 @@ public class ApplicationRunner extends Application {
         launch(args);
     }
 
+    private void loadOptions() {
+
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle(AppConstant.APPLICATION_TITLE);
