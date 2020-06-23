@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ua.com.meral.controller.MainSceneController"
             prefHeight="400.0" prefWidth="600.0">
 
-    <Label text="This is a simple demo application."/>
-    <Button text="Click me!"/>
+    <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <Tab fx:id="dataTab" text="Untitled Tab 1"/>
+        <Tab fx:id="barGraphTab" text="Untitled Tab 2"/>
+        <Tab fx:id="graphTab" text="Untitled Tab 2"/>
+    </TabPane>
 
 </AnchorPane>

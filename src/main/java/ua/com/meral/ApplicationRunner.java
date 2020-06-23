@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 import ua.com.meral.constant.AppConstant;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class ApplicationRunner extends Application {
+
+    public static final Logger LOG = Logger.getLogger(ApplicationRunner.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -32,6 +35,7 @@ public class ApplicationRunner extends Application {
     }
 
     private Scene loadScene(String resourceName) throws IOException {
+        LOG.debug("trying to load scene -> " + resourceName);
         FXMLLoader loader = new FXMLLoader();
         URL xmlUrl = getClass().getResource(AppConstant.FXML_PATH + resourceName);
         loader.setLocation(xmlUrl);
@@ -41,6 +45,7 @@ public class ApplicationRunner extends Application {
     }
 
     private Image getImage(String file) {
+        LOG.debug("trying to get image -> " + file);
         InputStream iconStream = getClass().getResourceAsStream(AppConstant.IMAGES_PATH + file);
         return new Image(iconStream);
     }
