@@ -8,17 +8,31 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 import ua.com.meral.constant.AppConstant;
+import ua.com.meral.extractor.PassengerExtractor;
+import ua.com.meral.model.Passenger;
+import ua.com.meral.util.CSVReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class ApplicationRunner extends Application {
 
     public static final Logger LOG = Logger.getLogger(ApplicationRunner.class);
 
+    private static final Function<String[], Passenger> extractor = new PassengerExtractor();
+
     public static void main(String[] args) {
-        launch(args);
+        List<String[]> data = CSVReader.read("titanic.csv");
+        data.remove(0);
+        List<Passenger> passengers = new ArrayList<>(data.size());
+        data.forEach(strings -> passengers.add(extractor.apply(strings)));
+        passengers.forEach(System.out::println);
+
+//        launch(args);
     }
 
     private void loadOptions() {
