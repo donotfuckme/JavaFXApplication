@@ -15,7 +15,7 @@ public class ApplicationRunner extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("JavaFX Test Application");
+        primaryStage.setTitle(AppConstant.APPLICATION_TITLE);
         primaryStage.getIcons().add(getImage(AppConstant.MERAL_IMAGE));
         primaryStage.show();
     }
