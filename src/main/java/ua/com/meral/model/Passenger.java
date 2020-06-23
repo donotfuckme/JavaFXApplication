@@ -21,7 +21,7 @@ public class Passenger {
 
     private String sex;
 
-    private int age;
+    private float age;
 
     private int sibSp;
 

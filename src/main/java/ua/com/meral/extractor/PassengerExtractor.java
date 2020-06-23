@@ -22,7 +22,7 @@ public class PassengerExtractor implements Function<String[], Passenger> {
         passenger.setPClass(Integer.parseInt(strings[i++]));
         passenger.setName(strings[i++] + strings[i++]);
         passenger.setSex(strings[i++]);
-        passenger.setAge(parseInt(strings[i++]));
+        passenger.setAge(parseFloat(strings[i++]));
         passenger.setSibSp(Integer.parseInt(strings[i++]));
         passenger.setParch(Integer.parseInt(strings[i++]));
         passenger.setTicket(strings[i++]);
@@ -36,13 +36,7 @@ public class PassengerExtractor implements Function<String[], Passenger> {
         return passenger;
     }
 
-    private int parseInt(String string) {
-        int number = 0;
-        try {
-            number = Integer.parseInt(string);
-        } catch (NumberFormatException e) {
-            LOG.error("Cannot parse a number");
-        }
-        return number;
+    private float parseFloat(String string) {
+        return string.isEmpty() ? 0 : Float.parseFloat(string);
     }
 }
