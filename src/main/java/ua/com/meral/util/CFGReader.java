@@ -27,7 +27,7 @@ public final class CFGReader {
             String str;
             while ((str = br.readLine()) != null) {
                 LOG.debug("Read line: " + str);
-                options.put(str.substring(0, str.lastIndexOf(DATA_SEPARATOR)), str.substring(str.lastIndexOf(DATA_SEPARATOR)));
+                options.put(str.substring(0, str.lastIndexOf(DATA_SEPARATOR)), str.substring(str.lastIndexOf(DATA_SEPARATOR) + 1));
             }
 
             return options;

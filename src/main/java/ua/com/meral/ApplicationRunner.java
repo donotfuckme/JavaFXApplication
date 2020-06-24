@@ -8,39 +8,35 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 import ua.com.meral.constant.AppConstant;
-import ua.com.meral.extractor.PassengerExtractor;
-import ua.com.meral.model.Passenger;
-import ua.com.meral.util.CSVReader;
+import ua.com.meral.controller.MainSceneController;
+import ua.com.meral.util.CFGReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class ApplicationRunner extends Application {
 
     public static final Logger LOG = Logger.getLogger(ApplicationRunner.class);
 
-    private static final Function<String[], Passenger> extractor = new PassengerExtractor();
+    private ResourceBundle resourceBundle;
 
     public static void main(String[] args) {
-        List<String[]> data = CSVReader.read("titanic.csv");
-        data.remove(0);
-        List<Passenger> passengers = new ArrayList<>(data.size());
-        data.forEach(strings -> passengers.add(extractor.apply(strings)));
-        passengers.forEach(System.out::println);
-
-//        launch(args);
+        launch(args);
     }
 
     private void loadOptions() {
-
+        LOG.debug("loading application configuration");
+        Map<String, String> options = CFGReader.read("options.cfg");
+        resourceBundle = ResourceBundle.getBundle("lang/locale", getLocale(options.getOrDefault("lang", "english")));
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        loadOptions();
         primaryStage.setTitle(AppConstant.APPLICATION_TITLE);
         primaryStage.getIcons().add(getImage(AppConstant.MERAL_IMAGE));
 
@@ -55,6 +51,7 @@ public class ApplicationRunner extends Application {
     private Scene loadScene(String resourceName) throws IOException {
         LOG.debug("trying to load scene -> " + resourceName);
         FXMLLoader loader = new FXMLLoader();
+        loader.setResources(resourceBundle);
         URL xmlUrl = getClass().getResource(AppConstant.FXML_PATH + resourceName);
         loader.setLocation(xmlUrl);
         Parent root = loader.load();
@@ -66,5 +63,18 @@ public class ApplicationRunner extends Application {
         LOG.debug("trying to get image -> " + file);
         InputStream iconStream = getClass().getResourceAsStream(AppConstant.IMAGES_PATH + file);
         return new Image(iconStream);
+    }
+
+    private Locale getLocale(String lang) {
+        Locale locale = Locale.ENGLISH;
+        switch (lang) {
+            case "russian":
+                locale = new Locale("ru");
+                break;
+            case "english":
+                locale = Locale.ENGLISH;
+                break;
+        }
+        return locale;
     }
 }
