@@ -8,6 +8,10 @@ public final class AppConstant {
 
     public static final int APP_HEIGHT = 400;
 
+    public static final String FARES_CACHE = "faresCache";
+
+    public static final String AGES_CACHE = "agesCache";
+
     public static final String MERAL_IMAGE = "meral.png";
 
     public static final String FXML_PATH = "/fxml/";

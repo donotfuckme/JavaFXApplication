@@ -1,15 +1,11 @@
 package ua.com.meral.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -20,14 +16,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import org.apache.log4j.Logger;
+import ua.com.meral.constant.AppConstant;
 import ua.com.meral.extractor.PassengerExtractor;
 import ua.com.meral.model.Passenger;
 import ua.com.meral.util.CSVReader;
+import ua.com.meral.util.CacheUtil;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -66,7 +66,7 @@ public class MainSceneController implements Initializable {
     public ComboBox<String> fieldComboBoxOnGraphTab;
 
     @FXML
-    public LineChart<String, Double> lineChart;
+    public LineChart<String, Number> lineChart;
 
     private List<String[]> passengersData;
 
@@ -98,6 +98,13 @@ public class MainSceneController implements Initializable {
                 initBarChart();
             }
         });
+
+        fieldComboBoxOnGraphTab.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedIndex = fieldComboBoxOnGraphTab.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                initLineChart();
+            }
+        });
     }
 
     private void initView() {
@@ -109,24 +116,23 @@ public class MainSceneController implements Initializable {
     }
 
     private void initFieldComboBoxOnGraphTab() {
-        List<String> languageList = Arrays.asList(
-                resourceBundle.getString("Age"),
-                resourceBundle.getString("Fire"),
-                resourceBundle.getString("pClass")
+        List<String> comboBoxFields = Arrays.asList(
+                resourceBundle.getString("age"),
+                resourceBundle.getString("fare")
         );
-        ObservableList<String> languages = FXCollections.observableList(languageList);
-
+        ObservableList<String> strings = FXCollections.observableList(comboBoxFields);
+        fieldComboBoxOnGraphTab.setItems(strings);
     }
 
     private void initFieldComboBoxOnBarGraphTab() {
-        List<String> languageList = Arrays.asList(
+        List<String> comboBoxFields = Arrays.asList(
                 resourceBundle.getString("survived"),
                 resourceBundle.getString("sex"),
                 resourceBundle.getString("pClass"),
                 resourceBundle.getString("embarked")
         );
-        ObservableList<String> languages = FXCollections.observableList(languageList);
-        fieldComboBoxOnBarGraphTab.setItems(languages);
+        ObservableList<String> strings = FXCollections.observableList(comboBoxFields);
+        fieldComboBoxOnBarGraphTab.setItems(strings);
     }
 
     private void initBarChart() {
@@ -154,7 +160,7 @@ public class MainSceneController implements Initializable {
                 seriesOne.getData().add(new XYChart.Data<>(survivedLabel, survived));
 
                 seriesTwo.setName(deadLabel);
-                seriesTwo.getData().add(new XYChart.Data<>(deadLabel, passengers.size() - survived));
+                seriesTwo.getData().add(new XYChart.Data<>(survivedLabel, passengers.size() - survived));
 
                 barChart.getData().add(seriesOne);
                 barChart.getData().add(seriesTwo);
@@ -164,10 +170,10 @@ public class MainSceneController implements Initializable {
 
                 long male = passengers.stream().filter(passenger -> passenger.getSex().equals("male")).count();
                 seriesOne.setName(maleLabel);
-                seriesOne.getData().add(new XYChart.Data<>(maleLabel, male));
+                seriesOne.getData().add(new XYChart.Data<>(sexLabel, male));
 
                 seriesTwo.setName(femaleLabel);
-                seriesTwo.getData().add(new XYChart.Data<>(femaleLabel, passengers.size() - male));
+                seriesTwo.getData().add(new XYChart.Data<>(sexLabel, passengers.size() - male));
 
                 barChart.getData().add(seriesOne);
                 barChart.getData().add(seriesTwo);
@@ -181,13 +187,13 @@ public class MainSceneController implements Initializable {
                 long thirdClass = passengers.stream().filter(passenger -> passenger.getPClass() == 3).count();
 
                 seriesOne.setName("1");
-                seriesOne.getData().add(new XYChart.Data<>("1", firstClass));
+                seriesOne.getData().add(new XYChart.Data<>(pClassLabel, firstClass));
 
                 seriesTwo.setName("2");
-                seriesTwo.getData().add(new XYChart.Data<>("2", secondClass));
+                seriesTwo.getData().add(new XYChart.Data<>(pClassLabel, secondClass));
 
                 seriesThree.setName("3");
-                seriesThree.getData().add(new XYChart.Data<>("3", thirdClass));
+                seriesThree.getData().add(new XYChart.Data<>(pClassLabel, thirdClass));
 
                 barChart.getData().add(seriesOne);
                 barChart.getData().add(seriesTwo);
@@ -202,17 +208,74 @@ public class MainSceneController implements Initializable {
                 long sCounter = passengers.stream().filter(passenger -> passenger.getEmbarked().equals("S")).count();
 
                 seriesOne.setName("Q");
-                seriesOne.getData().add(new XYChart.Data<>("Q", qCounter));
+                seriesOne.getData().add(new XYChart.Data<>(embarkedLabel, qCounter));
 
                 seriesTwo.setName("C");
-                seriesTwo.getData().add(new XYChart.Data<>("C", cCounter));
+                seriesTwo.getData().add(new XYChart.Data<>(embarkedLabel, cCounter));
 
                 seriesThree.setName("S");
-                seriesThree.getData().add(new XYChart.Data<>("S", sCounter));
+                seriesThree.getData().add(new XYChart.Data<>(embarkedLabel, sCounter));
 
                 barChart.getData().add(seriesOne);
                 barChart.getData().add(seriesTwo);
                 barChart.getData().add(seriesThree);
+            }
+        }
+    }
+
+    private void initLineChart() {
+        lineChart.getData().clear();
+        setLineChartData(lineChart);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setLineChartData(LineChart<String, Number> lineChart) {
+        String selected = fieldComboBoxOnGraphTab.getSelectionModel().getSelectedItem();
+        String ageLabel = resourceBundle.getString("age");
+        String fareLabel = resourceBundle.getString("fare");
+
+        if (selected != null) {
+            if (selected.equals(ageLabel)) {
+                Map<Float, Integer> ages = (HashMap<Float, Integer>) CacheUtil.getInstance().getCache().getOrDefault(AppConstant.AGES_CACHE, new HashMap<Float, Integer>());
+                if (ages.isEmpty()) {
+                    passengers.forEach(passenger -> {
+                        float age = passenger.getAge();
+                        if (!ages.containsKey(age)) {
+                            ages.put(age, 1);
+                        }
+                        ages.put(age, ages.get(age) + 1);
+                    });
+                }
+                CacheUtil.getInstance().getCache().put(AppConstant.AGES_CACHE, ages);
+
+                ages.forEach((aFloat, integer) -> {
+                    XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+                    series.setName(String.valueOf(aFloat));
+                    series.getData().add(new XYChart.Data<>(String.valueOf(aFloat), integer));
+                    lineChart.getData().add(series);
+                });
+
+            } else if (selected.equals(fareLabel)) {
+                Map<Float, Integer> fares = (HashMap<Float, Integer>) CacheUtil.getInstance().getCache().getOrDefault(AppConstant.FARES_CACHE, new HashMap<Float, Integer>());
+                if (fares.isEmpty()) {
+                    passengers.forEach(passenger -> {
+                        float fare = passenger.getFare();
+                        if (!fares.containsKey(fare)) {
+                            fares.put(fare, 1);
+                        }
+                        fares.put(fare, fares.get(fare) + 1);
+                    });
+                }
+                CacheUtil.getInstance().getCache().put(AppConstant.FARES_CACHE, fares);
+
+                fares.forEach((aFloat, integer) -> {
+                    XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+                    series.setName(String.valueOf(aFloat));
+                    series.getData().add(new XYChart.Data<>(String.valueOf(aFloat), integer));
+                    lineChart.getData().add(series);
+                });
             }
         }
     }
