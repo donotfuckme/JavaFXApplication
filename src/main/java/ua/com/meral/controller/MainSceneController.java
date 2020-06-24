@@ -105,25 +105,31 @@ public class MainSceneController implements Initializable {
         initLangComboBox();
         initDataGridPane();
         initFieldComboBoxOnBarGraphTab();
+        initFieldComboBoxOnGraphTab();
+    }
+
+    private void initFieldComboBoxOnGraphTab() {
+        List<String> languageList = Arrays.asList(
+                resourceBundle.getString("Age"),
+                resourceBundle.getString("Fire"),
+                resourceBundle.getString("pClass")
+        );
+        ObservableList<String> languages = FXCollections.observableList(languageList);
+
     }
 
     private void initFieldComboBoxOnBarGraphTab() {
         List<String> languageList = Arrays.asList(
                 resourceBundle.getString("survived"),
                 resourceBundle.getString("sex"),
-                resourceBundle.getString("pClass")
+                resourceBundle.getString("pClass"),
+                resourceBundle.getString("embarked")
         );
         ObservableList<String> languages = FXCollections.observableList(languageList);
         fieldComboBoxOnBarGraphTab.setItems(languages);
     }
 
     private void initBarChart() {
-//        CategoryAxis xAxis = new CategoryAxis();
-//        xAxis.setLabel(fieldComboBoxOnBarGraphTab.getSelectionModel().getSelectedItem());
-//        NumberAxis yAxis = new NumberAxis();
-//        yAxis.setLabel("Value");
-//
-//        barChart = new BarChart<>(xAxis, yAxis);
         barChart.getData().clear();
         setBarChartData(barChart);
     }
@@ -136,6 +142,7 @@ public class MainSceneController implements Initializable {
         String maleLabel = resourceBundle.getString("male");
         String femaleLabel = resourceBundle.getString("female");
         String pClassLabel = resourceBundle.getString("pClass");
+        String embarkedLabel = resourceBundle.getString("embarked");
 
         if (selected != null) {
             if (selected.equals(survivedLabel)) {
@@ -181,6 +188,27 @@ public class MainSceneController implements Initializable {
 
                 seriesThree.setName("3");
                 seriesThree.getData().add(new XYChart.Data<>("3", thirdClass));
+
+                barChart.getData().add(seriesOne);
+                barChart.getData().add(seriesTwo);
+                barChart.getData().add(seriesThree);
+            } else if (selected.equals(embarkedLabel)) {
+                XYChart.Series<String, Number> seriesOne = new XYChart.Series<>();
+                XYChart.Series<String, Number> seriesTwo = new XYChart.Series<>();
+                XYChart.Series<String, Number> seriesThree = new XYChart.Series<>();
+
+                long qCounter = passengers.stream().filter(passenger -> passenger.getEmbarked().equals("Q")).count();
+                long cCounter = passengers.stream().filter(passenger -> passenger.getEmbarked().equals("C")).count();
+                long sCounter = passengers.stream().filter(passenger -> passenger.getEmbarked().equals("S")).count();
+
+                seriesOne.setName("Q");
+                seriesOne.getData().add(new XYChart.Data<>("Q", qCounter));
+
+                seriesTwo.setName("C");
+                seriesTwo.getData().add(new XYChart.Data<>("C", cCounter));
+
+                seriesThree.setName("S");
+                seriesThree.getData().add(new XYChart.Data<>("S", sCounter));
 
                 barChart.getData().add(seriesOne);
                 barChart.getData().add(seriesTwo);
