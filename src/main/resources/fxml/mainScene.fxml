@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.ScrollPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ua.com.meral.controller.MainSceneController"
-            prefHeight="600.0" prefWidth="900.0" >
+            prefHeight="600.0" prefWidth="900.0">
 
     <TabPane AnchorPane.rightAnchor="10"
              AnchorPane.leftAnchor="10"
@@ -26,11 +30,31 @@
         </Tab>
 
         <Tab fx:id="barGraphTab" text="%barGraphTab">
-            <ComboBox fx:id="fieldComboBoxOnBarGraphTab" prefWidth="150.0"/>
+            <VBox>
+                <ComboBox fx:id="fieldComboBoxOnBarGraphTab" prefWidth="150.0"/>
+                <BarChart fx:id="barChart">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
         </Tab>
 
         <Tab fx:id="graphTab" text="%graphTab">
-            <ComboBox fx:id="fieldComboBoxOnGraphTab" prefWidth="150.0"/>
+            <VBox>
+                <ComboBox fx:id="fieldComboBoxOnGraphTab" prefWidth="150.0"/>
+                <LineChart fx:id="lineChart">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
         </Tab>
     </TabPane>
 

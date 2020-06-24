@@ -18,7 +18,7 @@ public class PassengerExtractor implements Function<String[], Passenger> {
         int i = 0;
         Passenger passenger = new Passenger();
         passenger.setId(Integer.parseInt(strings[i++]));
-        passenger.setSurvived(Boolean.parseBoolean(strings[i++]));
+        passenger.setSurvived(parseBool(strings[i++]));
         passenger.setPClass(Integer.parseInt(strings[i++]));
         passenger.setName(strings[i++] + strings[i++]);
         passenger.setSex(strings[i++]);
@@ -38,5 +38,9 @@ public class PassengerExtractor implements Function<String[], Passenger> {
 
     private float parseFloat(String string) {
         return string.isEmpty() ? 0 : Float.parseFloat(string);
+    }
+
+    private boolean parseBool(String string) {
+        return Integer.parseInt(string) == 1;
     }
 }
