@@ -6,10 +6,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ua.com.meral.controller.MainSceneController"
-            prefHeight="400.0" prefWidth="600.0" >
+            prefHeight="600.0" prefWidth="900.0" >
 
     <TabPane AnchorPane.rightAnchor="10"
              AnchorPane.leftAnchor="10"
@@ -17,23 +18,19 @@
              AnchorPane.topAnchor="10">
         <Tab fx:id="dataTab" text="%dataTab">
             <VBox>
-                <ComboBox fx:id="langComboBox" prefWidth="150.0">
-                </ComboBox>
-
-                <GridPane fx:id="dataGridPane">
-
-                </GridPane>
+                <ComboBox fx:id="langComboBox" prefWidth="150.0"/>
+                <ScrollPane fx:id="scrollPane">
+                    <GridPane fx:id="dataGridPane"/>
+                </ScrollPane>
             </VBox>
         </Tab>
 
         <Tab fx:id="barGraphTab" text="%barGraphTab">
-            <ComboBox fx:id="fieldComboBoxOnBarGraphTab" prefWidth="150.0">
-            </ComboBox>
+            <ComboBox fx:id="fieldComboBoxOnBarGraphTab" prefWidth="150.0"/>
         </Tab>
 
         <Tab fx:id="graphTab" text="%graphTab">
-            <ComboBox fx:id="fieldComboBoxOnGraphTab" prefWidth="150.0">
-            </ComboBox>
+            <ComboBox fx:id="fieldComboBoxOnGraphTab" prefWidth="150.0"/>
         </Tab>
     </TabPane>
 
